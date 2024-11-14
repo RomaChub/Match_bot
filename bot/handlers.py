@@ -5,6 +5,7 @@ from aiogram.types import Message
 from aiogram import Router, F, Bot
 from aiogram.filters import CommandStart
 
+from bot.event_tracker import Events
 from bot.utils import Utils, save_about
 
 router = Router()
@@ -12,6 +13,7 @@ router = Router()
 
 @router.message(CommandStart())
 async def start(message: Message):
+    Events.start_event(str(message.from_user.id))
     await message.answer("Hello! Let's get acquainted.")
     await message.answer("Record a voice message and tell us who you are, how you are useful, and who you need.")
 
