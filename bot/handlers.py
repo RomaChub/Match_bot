@@ -12,24 +12,41 @@ router = Router()
 
 
 @router.message(CommandStart())
-async def start(message: Message):
+async def start(message: Message, state: FSMContext):
     Events.start_event(str(message.from_user.id))
-    await message.answer("Hello! Let's get acquainted.")
-    await message.answer("Record a voice message and tell us who you are, how you are useful, and who you need.")
+    user_id = message.from_user.id
+    answer = await Utils.get_response_from_openai(message.text, state, user_id)
+    await message.answer("Привет, это AI-ассистент от команды HappyAi! Искусственный интеллект может решать бизнес-задачи и экономить твое время"
+                         "Поговори со мной, чтобы я мог предложить решения которые сделают работу эффективнее.")
+    await message.answer(answer[1])
+
 
 @router.message(F.content_type == "voice")
 async def process_voice_message(message: Message, bot: Bot, state: FSMContext):
-    processing_message = await message.answer("Wait, I'm processing your message")
+    processing_message = await message.answer("Обрабатываем информацию...")
     voice_path = await Utils.save_voice_as_mp3(bot, message)
 
     transcripted_voice_text = await Utils.audio_to_text(voice_path)
-
-    answer = await Utils.get_response_from_openai(transcripted_voice_text, state)
+    user_id = message.from_user.id
+    answer = await Utils.get_response_from_openai(transcripted_voice_text, state, user_id)
     os.remove(voice_path)
-    user_id = str(message.from_user.id)
-    await save_about(who=answer[0], what_can=answer[1], who_need=answer[2], user_id=user_id, text=transcripted_voice_text)
 
+    await save_about(tg_id=answer[0], new_dialog=f"пользователь: {transcripted_voice_text} \n Бот:{answer[1]} \n",
+                     new_tread_id=answer[2])
+
+    await message.answer(answer[1])
     await processing_message.delete()
-    await message.answer("I will send you an answer when I find a suitable person")
+
+@router.message(F.content_type == "text")
+async def process_voice_message(message: Message, bot: Bot, state: FSMContext):
+    processing_message = await message.answer("Обрабатываем информацию...")
+    user_id = message.from_user.id
+    answer = await Utils.get_response_from_openai(message.text, state, user_id)
+
+    await save_about(tg_id=answer[0], new_dialog=f"пользователь: {message.text} \n Бот:{answer[1]} \n",
+                     new_tread_id=answer[2])
+
+    await message.answer(answer[1])
+    await processing_message.delete()
 
 

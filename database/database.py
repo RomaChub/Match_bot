@@ -15,10 +15,8 @@ class AboutOrm(Base):
     __tablename__ = "about"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    who: Mapped[str]
-    what_can: Mapped[str]
-    who_need: Mapped[str]
-    all_text: Mapped[str]
-    user_id: Mapped[str]
+    tg_id: Mapped[int]
+    dialog: Mapped[str]
+    tread_id: Mapped[str]
 
 

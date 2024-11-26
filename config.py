@@ -19,8 +19,6 @@ class Settings(BaseSettings):
     db_pass: str = os.getenv("DB_PASS")
 
     assistant_who_is_id: str = os.getenv("ASSISTANT_WHO_IS_ID")
-    assistant_who_need_id: str = os.getenv("ASSISTANT_WHO_NEED_ID")
-    assistant_what_can_id: str = os.getenv("ASSISTANT_WHAT_CAN_IS_ID")
 
     @property
     def get_database_url(self):
