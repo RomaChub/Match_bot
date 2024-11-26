@@ -15,7 +15,7 @@ router = Router()
 async def start(message: Message, state: FSMContext):
     Events.start_event(str(message.from_user.id))
     user_id = message.from_user.id
-    answer = await Utils.get_response_from_openai(message.text, state, user_id)
+    answer = await Utils.get_response_from_openai(message.text, state, int(user_id))
     await message.answer("Привет, это AI-ассистент от команды HappyAi! Искусственный интеллект может решать бизнес-задачи и экономить твое время"
                          "Поговори со мной, чтобы я мог предложить решения которые сделают работу эффективнее.")
     await message.answer(answer[1])
@@ -28,7 +28,7 @@ async def process_voice_message(message: Message, bot: Bot, state: FSMContext):
 
     transcripted_voice_text = await Utils.audio_to_text(voice_path)
     user_id = message.from_user.id
-    answer = await Utils.get_response_from_openai(transcripted_voice_text, state, user_id)
+    answer = await Utils.get_response_from_openai(transcripted_voice_text, state, int(user_id))
     os.remove(voice_path)
 
     await save_about(tg_id=answer[0], new_dialog=f"пользователь: {transcripted_voice_text} \n Бот:{answer[1]} \n",
@@ -41,7 +41,7 @@ async def process_voice_message(message: Message, bot: Bot, state: FSMContext):
 async def process_voice_message(message: Message, bot: Bot, state: FSMContext):
     processing_message = await message.answer("Обрабатываем информацию...")
     user_id = message.from_user.id
-    answer = await Utils.get_response_from_openai(message.text, state, user_id)
+    answer = await Utils.get_response_from_openai(message.text, state, int(user_id))
 
     await save_about(tg_id=answer[0], new_dialog=f"пользователь: {message.text} \n Бот:{answer[1]} \n",
                      new_tread_id=answer[2])
