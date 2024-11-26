@@ -1,7 +1,8 @@
 #!/bin/sh
 
+alembic downgrade base  # Возвращает базу данных к начальному состоянию (перед миграциями)
+
 alembic revision --autogenerate
-alembic revision --autogenerate -m "migration"
 
 alembic upgrade head
 
