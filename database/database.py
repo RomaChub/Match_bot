@@ -15,7 +15,7 @@ class AboutOrm(Base):
     __tablename__ = "about"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    tg_id: Mapped[int]
+    tg_id: Mapped[str]
     dialog: Mapped[str]
     tread_id: Mapped[str]
 

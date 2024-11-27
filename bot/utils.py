@@ -14,11 +14,11 @@ from sqlalchemy.future import select
 load_dotenv()
 client = AsyncOpenAI()
 
-async def save_about(tg_id, new_dialog: str, new_tread_id: str):
+async def save_about(tg_id: str, new_dialog: str, new_tread_id: str):
     async with new_session() as session:
         # Находим существующую запись
         result = await session.execute(
-            select(AboutOrm).filter(AboutOrm.tg_id == int(tg_id))
+            select(AboutOrm).filter(AboutOrm.tg_id == tg_id)
         )
         about_orm = result.scalar_one_or_none()  # Получаем объект ORM или None
 
@@ -59,10 +59,10 @@ class Utils:
 
 
     @classmethod
-    async def get_response_from_openai(cls, text: str, state: FSMContext, tg_id):
+    async def get_response_from_openai(cls, text: str, state: FSMContext, tg_id: str):
         async with new_session() as session:
             about_orm = await session.execute(
-                select(AboutOrm).filter(AboutOrm.tg_id == int(tg_id))
+                select(AboutOrm).filter(AboutOrm.tg_id == tg_id)
             )
             about_orm = about_orm.scalar_one_or_none()  # Получаем один результат или None
 
