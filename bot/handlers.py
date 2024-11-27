@@ -16,7 +16,12 @@ async def start(message: Message, state: FSMContext):
     Events.start_event(str(message.from_user.id))
     user_id = message.from_user.id
     answer = await Utils.get_response_from_openai(message.text, state, int(user_id))
-    await message.answer("Привет! Я — AI-aссистент. А как вас зовут и какую должность вы занимаете в компании?")
+    await message.answer("Привет, я AI-ассистент от команды HappyAi!"
+                         "Искусственный интеллект может решать бизнес-задачи и экономить твое время"
+                         "Поговори со мной, чтобы я мог предложить решения которые сделают работу эффективнее."
+                         "\n\nОтвечать можно текстом или голосовыми сообщениями")
+
+    await  message.answer("А как вас зовут и какую должность вы занимаете в компании ?")
 
 
 @router.message(F.content_type == "voice")
